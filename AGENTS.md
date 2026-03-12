@@ -1,0 +1,34 @@
+# Agent Workflow
+
+## Working Context
+
+- In the standalone Agent Picker repository, root scripts target `example/next-host`.
+- In a product repo that vendors Agent Picker under `vendor/agent-picker`, prefer the host project's root scripts when they are available.
+- Treat `.agent-picker/dev-selection.json` and `.agent-picker/agent-notes/*.json` as shared coordination state, not private scratch space.
+
+## Agent Picker First
+
+- If the user mentions Agent Picker, the picker, a picked element, or says they selected something for you, read the latest selection first.
+- If the user says `이거 봐줘` or `방금 선택한 거 봐줘`, interpret that as "read the latest Agent Picker selection first."
+- If the user says `see pick1`, `check pick 1`, `look at selection 2`, or similar English shorthand, read the latest selection first and map the number to the `elements` array using 1-based indexing.
+- Primary command in the standalone repo: `pnpm run agent-pickerd:get-selection`
+- Primary command in an installed host: `pnpm run agent-pickerd:get-selection` from the host root
+
+## Agent Notes
+
+- When you begin work from a saved selection, acknowledge it in the shared note channel.
+- Use `pnpm run agent-pickerd:set-agent-note -- --author codex --status acknowledged --message "Read the selection and investigating."`
+- Update the note while working with `acknowledged`, `in_progress`, `fixed`, or `needs_reselect`.
+- Use `needs_reselect` when the saved selection no longer matches the current UI or code path.
+
+## Final Loop
+
+- If you changed code for a picked element, leave a final agent note before replying.
+- Include what changed, whether you verified it, and whether reselection is needed.
+- Clear stale notes only when they would actively mislead the next agent.
+
+## Repo Discipline
+
+- Keep shared engine code inside `scripts/`, `tools/`, and `web/` reusable across hosts.
+- Keep example-only behavior inside `example/next-host/`.
+- Do not hardcode product-specific names, storage keys, or routes into the shared engine without documenting them.

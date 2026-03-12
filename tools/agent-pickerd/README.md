@@ -1,33 +1,42 @@
 # agent-pickerd
 
-`agent-pickerd`는 Agent Picker의 로컬 상태 서버입니다.
+`agent-pickerd` is Agent Picker's local state daemon.
 
-주요 역할:
-- `.agent-picker/scene.json` 기반 scene 읽기/쓰기
-- scene validation
-- file watch + SSE publish
-- selection / agent note API 제공
-- CLI 명령 제공
+It is responsible for:
+- reading and writing `.agent-picker/scene.json`
+- validating scene payloads
+- watching files and publishing SSE updates
+- exposing selection and agent note endpoints
+- providing a CLI for agents and local tooling
 
-UI는 이 daemon의 HTTP/SSE endpoint를 통해 scene을 읽고 저장합니다.
-에이전트는 CLI 또는 같은 상태 파일을 통해 동일한 source of truth를 수정합니다.
+The UI reads and writes the scene through the daemon's HTTP/SSE endpoints.
+Agents update the same source of truth through the CLI or the shared state files.
 
-## 실행
+## Running the daemon
 
-루트에서:
+In the standalone repository:
 
 ```bash
 pnpm run agent-pickerd:serve
 ```
 
-또는 Node만 바로 실행:
+That serves the bundled example host at `./example/next-host`.
+
+Direct CLI usage from the standalone repository:
 
 ```bash
-node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs serve --root .
+node ./tools/agent-pickerd/main.mjs serve --root ./example/next-host
 ```
 
-기본 주소는 `http://127.0.0.1:4312`입니다.
-상태 파일은 `.agent-picker/`에 저장됩니다.
+If Agent Picker is vendored into another project, prefer that host project's root scripts.
+The direct equivalent is:
+
+```bash
+node ./vendor/agent-picker/tools/agent-pickerd/main.mjs serve --root .
+```
+
+The default address is `http://127.0.0.1:4312`.
+State files live under the selected host root's `.agent-picker/` directory.
 
 ## HTTP API
 
@@ -45,14 +54,23 @@ node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs serve --root 
 - `POST /agent-note`
 - `DELETE /agent-note`
 
-## CLI 예시
+## CLI examples
+
+Standalone repository:
 
 ```bash
-node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs get-scene --root .
-node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs get-selection --root .
-node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs get-agent-note --root .
-node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs set-agent-note --root . --author codex --status fixed --message "Updated the selected element."
-node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs add-node --root . --id node-logo-01 --item-id draft-logo-01 --title "Logo 01" --viewport original --x 120 --y 80 --z-index 1
-node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs move-node --root . --id node-logo-01 --x 360 --y 160
-node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs remove-node --root . --id node-logo-01
+node ./tools/agent-pickerd/main.mjs get-scene --root ./example/next-host
+node ./tools/agent-pickerd/main.mjs get-selection --root ./example/next-host
+node ./tools/agent-pickerd/main.mjs get-agent-note --root ./example/next-host
+node ./tools/agent-pickerd/main.mjs set-agent-note --root ./example/next-host --author codex --status fixed --message "Updated the selected element."
+node ./tools/agent-pickerd/main.mjs add-node --root ./example/next-host --id node-welcome-01 --item-id draft-cards-welcomecard --title "Welcome Card" --viewport original --x 120 --y 80 --z-index 1
+```
+
+Vendored into a host project:
+
+```bash
+node ./vendor/agent-picker/tools/agent-pickerd/main.mjs get-scene --root .
+node ./vendor/agent-picker/tools/agent-pickerd/main.mjs get-selection --root .
+node ./vendor/agent-picker/tools/agent-pickerd/main.mjs get-agent-note --root .
+node ./vendor/agent-picker/tools/agent-pickerd/main.mjs set-agent-note --root . --author codex --status fixed --message "Updated the selected element."
 ```

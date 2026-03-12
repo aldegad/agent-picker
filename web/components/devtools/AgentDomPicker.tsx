@@ -113,14 +113,8 @@ const ROOT_MARGIN = 20;
 const DRAG_THRESHOLD = 6;
 const FLING_STOP_SPEED = 0.008;
 const FLING_VELOCITY_LIMIT = 2.8;
-const PICKER_POSITION_STORAGE_KEYS = [
-  "post-bridge:agent-picker-position",
-  "post-bridge:dev-dom-picker-position",
-] as const;
-const PICKER_SESSION_ID_STORAGE_KEYS = [
-  "post-bridge:agent-picker-session-id",
-  "post-bridge:dev-dom-picker-session-id",
-] as const;
+const PICKER_POSITION_STORAGE_KEYS = ["agent-picker:picker-position"] as const;
+const PICKER_SESSION_ID_STORAGE_KEYS = ["agent-picker:session-id"] as const;
 const SNAPSHOT_MAX_PIXELS = 2_400_000;
 const SNAPSHOT_MIN_PIXEL_RATIO = 0.75;
 const SNAPSHOT_MAX_PIXEL_RATIO = 2;

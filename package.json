@@ -1,0 +1,37 @@
+{
+  "name": "agent-picker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local visual workspace and selection bridge for coding agents.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.25.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "postinstall": "node ./scripts/link-example-runtime.mjs",
+    "setup:example": "node ./scripts/link-example-runtime.mjs",
+    "agent-picker:prepare": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host agent-picker:prepare",
+    "agent-picker:web:dev": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host dev",
+    "agent-picker:web:build": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host build",
+    "dev": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host dev",
+    "build": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host build",
+    "lint": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host lint",
+    "typecheck": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host typecheck",
+    "test": "vitest run --passWithNoTests",
+    "qa:agent-picker": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host qa:agent-picker",
+    "agent-pickerd:serve": "node ./tools/agent-pickerd/main.mjs serve --root ./example/next-host",
+    "agent-pickerd:get-scene": "node ./tools/agent-pickerd/main.mjs get-scene --root ./example/next-host",
+    "agent-pickerd:get-selection": "node ./tools/agent-pickerd/main.mjs get-selection --root ./example/next-host",
+    "agent-pickerd:get-agent-note": "node ./tools/agent-pickerd/main.mjs get-agent-note --root ./example/next-host",
+    "agent-pickerd:set-agent-note": "node ./tools/agent-pickerd/main.mjs set-agent-note --root ./example/next-host",
+    "agent-pickerd:clear-agent-note": "node ./tools/agent-pickerd/main.mjs clear-agent-note --root ./example/next-host",
+    "init": "node ./tools/init/main.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "25.3.5",
+    "playwright": "^1.58.2",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
+  }
+}
