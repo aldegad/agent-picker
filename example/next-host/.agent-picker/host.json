@@ -1,9 +1,0 @@
-{
-  "version": 1,
-  "host": {
-    "kind": "next-app-router",
-    "path": ".",
-    "routeRoot": "src/app",
-    "packageManager": "pnpm"
-  }
-}

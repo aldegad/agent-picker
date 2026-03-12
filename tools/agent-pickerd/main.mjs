@@ -269,7 +269,7 @@ export function createServer({ host, port, root }) {
         "X-Accel-Buffering": "no",
       });
       response.write("retry: 1000\n\n");
-      response.write(encodeSceneEvent(store.read(), "snapshot"));
+      response.write(encodeSceneEvent(store.read(), "initial"));
 
       const listenerId = broker.subscribe(response);
       const keepAlive = setInterval(() => {

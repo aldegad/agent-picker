@@ -1,18 +1,15 @@
 # Agent Picker
 
-Agent Picker is a package-first UI selection bridge for coding agents. The core picker mounts into your running app, captures DOM selections, and syncs shared agent notes through `agent-pickerd`. A separate workspace package powers the optional draft playground.
+Agent Picker is a package-first UI selection bridge for coding agents. Mount the picker into your app, capture DOM selections, sync shared agent notes through `agent-pickerd`, and optionally render a separate design lab for comparing UI pieces.
 
 ## Packages
 
 - `@agent-picker/picker`: app-shell provider and devtools overlay
-- `@agent-picker/workspace`: draft board UI and workspace item types
+- `@agent-picker/design-lab`: design-lab board UI and item types
 - `@agent-picker/next`: Next.js route exports for selection capture
 - `@agent-picker/server`: `agent-pickerd` CLI and daemon entrypoint
-- `@agent-picker/react`: compatibility re-export for older integrations
 
-The repository ships with a bundled Next.js example host and can also be vendored into a product codebase.
-
-## Quick Start
+## Develop This Repo
 
 ```bash
 pnpm install
@@ -25,69 +22,31 @@ In another terminal:
 pnpm run agent-pickerd:serve
 ```
 
-Then open [http://127.0.0.1:3000/playground](http://127.0.0.1:3000/playground).
+Then open [http://127.0.0.1:3000/design-lab](http://127.0.0.1:3000/design-lab).
 
 The example host stores local state in `example/next-host/.agent-picker/`.
-Installed hosts should add `.agent-picker/` to `.gitignore`.
 
-## Preferred Integration
+## Install Into Your App
 
-Keep the picker core and the draft workspace separate:
+Agent Picker no longer needs a project installer. The current host shape is:
 
-- mount `AgentPickerProvider` near your app shell
-- render `AgentPickerWorkspace` only on your draft playground route
-- pass draft items into that route
-- re-export the selection route from `@agent-picker/next`
-- run `agent-pickerd`
-
-```tsx
-import { AgentPickerProvider } from "@agent-picker/picker";
-
-export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <AgentPickerProvider showDevtoolsInDevelopment>
-      {children}
-    </AgentPickerProvider>
-  );
-}
-```
-
-```tsx
-"use client";
-
-import { AgentPickerWorkspace } from "@agent-picker/workspace";
-import { generatedAgentPickerDraftItems } from "@/lib/agent-picker/generated-drafts";
-
-export function DraftWorkspace() {
-  return <AgentPickerWorkspace items={generatedAgentPickerDraftItems} />;
-}
-```
-
-```tsx
-import { DraftWorkspace } from "@/components/agent-picker/DraftWorkspace";
-
-export default function PlaygroundPage() {
-  return <DraftWorkspace />;
-}
-```
-
-```ts
-export { dynamic, GET, POST } from "@agent-picker/next";
-```
+1. install the packages
+2. add a provider near the app shell
+3. expose the selection route
+4. render a `design-lab` client route
+5. run `agent-pickerd`
 
 Detailed integration notes: [docs/install-next-app-router.md](./docs/install-next-app-router.md)
 
 ## Repo Layout
 
 - `packages/picker/`: picker core provider and devtools overlay
-- `packages/workspace/`: draft workspace UI and registry helpers
+- `packages/design-lab/`: design-lab board UI and registry helpers
 - `packages/next/`: Next.js selection route exports
 - `packages/server/`: `agent-pickerd` package entrypoints
-- `packages/react/`: compatibility facade across picker and workspace
 - `web/`: shared UI primitives, scene hooks, and devtools internals
-- `tools/agent-pickerd/`: local state daemon and CLI
-- `tools/init/`: legacy vendored installer for supported app types
-- `scripts/`: draft generation, dev orchestration, and QA helpers
+- `tools/agent-pickerd/`: local state daemon implementation
+- `scripts/`: standalone example runtime wiring
 - `example/next-host/`: smoke-test host app for the standalone repository
 
 ## Agent Workflow
@@ -110,8 +69,7 @@ Agent-specific guidance lives here:
 - `pnpm run build`: build the bundled example host
 - `pnpm run lint`: typecheck the example host
 - `pnpm run test`: run daemon unit tests
-- `pnpm run qa:agent-picker`: capture smoke-test screenshots with Playwright
-- `pnpm run init`: run the legacy vendored installer from a host project root
+- `pnpm run agent-pickerd:serve`: start the local daemon for the example host
 
 ## Docs
 

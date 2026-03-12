@@ -1,20 +1,51 @@
 # Install Into a Next.js App Router Host
 
-Agent Picker's preferred integration style is package-oriented:
+Agent Picker's current integration model is package-first. There is no installer step.
 
-- `@agent-picker/picker` for the app-shell provider
-- `@agent-picker/workspace` for the draft playground page
-- `@agent-picker/next` for the selection route
-- `@agent-picker/server` for `agent-pickerd`
+## Install the Packages
 
-## Minimal Host Shape
+Use the package manager you prefer. For a published release, the npm form looks like this:
 
-Your host needs four things:
+```bash
+npm install @agent-picker/picker @agent-picker/design-lab @agent-picker/next @agent-picker/server
+```
 
-1. Draft sources under `components/agent-picker/drafts`
-2. `AgentPickerProvider` near the app shell
-3. A route that renders `AgentPickerWorkspace` with the generated draft items
-4. A dev selection route export
+If you are testing from a local clone before publication, workspace-link or file-link the same packages instead.
+
+## Next Config
+
+The UI packages ship as source, so a Next.js host should transpile them:
+
+```ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  transpilePackages: [
+    "@agent-picker/picker",
+    "@agent-picker/design-lab",
+    "@agent-picker/next",
+  ],
+};
+
+export default nextConfig;
+```
+
+## Host Scripts
+
+Add daemon scripts at the host root so coding agents have a stable command surface:
+
+```json
+{
+  "scripts": {
+    "agent-pickerd:serve": "agent-pickerd serve --root .",
+    "agent-pickerd:get-scene": "agent-pickerd get-scene --root .",
+    "agent-pickerd:get-selection": "agent-pickerd get-selection --root .",
+    "agent-pickerd:get-agent-note": "agent-pickerd get-agent-note --root .",
+    "agent-pickerd:set-agent-note": "agent-pickerd set-agent-note --root .",
+    "agent-pickerd:clear-agent-note": "agent-pickerd clear-agent-note --root ."
+  }
+}
+```
 
 ## Provider
 
@@ -34,26 +65,42 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## Playground Route
+## Design-Lab Route
+
+Render your design-lab items directly on a client route:
 
 ```tsx
 "use client";
 
-import { AgentPickerWorkspace } from "@agent-picker/workspace";
-import { generatedAgentPickerDraftItems } from "@/lib/agent-picker/generated-drafts";
+import type { ComponentType } from "react";
+import {
+  AgentPickerDesignLab,
+  type AgentPickerComponentItem,
+} from "@agent-picker/design-lab";
+import WelcomeCard from "@/components/agent-picker/WelcomeCard";
 
-export function DraftWorkspace() {
-  return <AgentPickerWorkspace items={generatedAgentPickerDraftItems} />;
+const designLabItems: AgentPickerComponentItem[] = [
+  {
+    id: "draft-welcome-card",
+    title: "Welcome Card",
+    shortLabel: "Welcome Card",
+    sourceKind: "draft",
+    category: "cards",
+    componentPath: "src/components/agent-picker/WelcomeCard.tsx",
+    tags: ["welcome", "card", "example"],
+    recommendedViewport: "desktop",
+    renderKind: "component",
+    Component: WelcomeCard as ComponentType<Record<string, unknown>>,
+    props: {},
+  },
+];
+
+export default function DesignLabPage() {
+  return <AgentPickerDesignLab items={designLabItems} />;
 }
 ```
 
-```tsx
-import { DraftWorkspace } from "@/components/agent-picker/DraftWorkspace";
-
-export default function PlaygroundPage() {
-  return <DraftWorkspace />;
-}
-```
+Keep the items inline if the route is small, or move them into a nearby `design-lab-items.tsx` file.
 
 ## Selection Route
 
@@ -63,38 +110,22 @@ Create `app/api/devtools/selection/route.ts` or `src/app/api/devtools/selection/
 export { dynamic, GET, POST } from "@agent-picker/next";
 ```
 
-## Daemon
+## Daemon and Dev Server
 
 From the host project root:
 
 ```bash
-pnpm run agent-pickerd:serve
-pnpm run agent-picker:web:dev
+npm run agent-pickerd:serve
+npm run dev
 ```
 
-Useful agent commands:
+Useful shared-agent commands:
 
 ```bash
-pnpm run agent-pickerd:get-selection
-pnpm run agent-pickerd:get-agent-note
-pnpm run agent-pickerd:set-agent-note -- --author codex --status in_progress --message "Investigating the selected UI."
+npm run agent-pickerd:get-selection
+npm run agent-pickerd:get-agent-note
+npm run agent-pickerd:set-agent-note -- --author codex --status in_progress --message "Investigating the selected UI."
 ```
-
-## Draft Sources
-
-Add draft components and assets under:
-
-```text
-src/components/agent-picker/drafts
-```
-
-Or, if your alias root is the project root:
-
-```text
-components/agent-picker/drafts
-```
-
-Agent Picker generates the draft registry and mirrored public assets during `predev` and `prebuild`.
 
 ## Git Ignore
 
@@ -103,12 +134,3 @@ Treat `.agent-picker/` as local state and add it to your host `.gitignore`:
 ```gitignore
 .agent-picker/
 ```
-
-If you also mirror generated draft assets into your app's public folder, ignore those generated directories too.
-
-## Compatibility Notes
-
-- `@agent-picker/react` still exists as a compatibility facade, but new work should import `@agent-picker/picker` and `@agent-picker/workspace` directly.
-- `tools/init/main.mjs` still exists for vendored installs. It is now considered a compatibility path rather than the preferred package-first model.
-- If your team wants a tracked git dependency, a submodule is safer than pushing to a public remote from a private host repo.
-- If you prefer a vendored copy without submodules, clone the repo into `vendor/agent-picker` and update it intentionally.

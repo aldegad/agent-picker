@@ -11,9 +11,6 @@ importers:
       '@types/node':
         specifier: 25.3.5
         version: 25.3.5
-      playwright:
-        specifier: ^1.58.2
-        version: 1.58.2
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -23,15 +20,15 @@ importers:
 
   example/next-host:
     dependencies:
+      '@agent-picker/design-lab':
+        specifier: workspace:*
+        version: link:../../packages/design-lab
       '@agent-picker/next':
         specifier: workspace:*
         version: link:../../packages/next
       '@agent-picker/picker':
         specifier: workspace:*
         version: link:../../packages/picker
-      '@agent-picker/workspace':
-        specifier: workspace:*
-        version: link:../../packages/workspace
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -82,6 +79,18 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
+  packages/design-lab:
+    dependencies:
+      '@agent-picker/picker':
+        specifier: workspace:*
+        version: link:../picker
+      react:
+        specifier: ^19.0.0
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.4(react@19.2.4)
+
   packages/next:
     dependencies:
       next:
@@ -103,34 +112,7 @@ importers:
         specifier: ^19.0.0
         version: 19.2.4(react@19.2.4)
 
-  packages/react:
-    dependencies:
-      '@agent-picker/picker':
-        specifier: workspace:*
-        version: link:../picker
-      '@agent-picker/workspace':
-        specifier: workspace:*
-        version: link:../workspace
-      react:
-        specifier: ^19.0.0
-        version: 19.2.4
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.4(react@19.2.4)
-
   packages/server: {}
-
-  packages/workspace:
-    dependencies:
-      '@agent-picker/picker':
-        specifier: workspace:*
-        version: link:../picker
-      react:
-        specifier: ^19.0.0
-        version: 19.2.4
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.4(react@19.2.4)
 
 packages:
 
@@ -852,11 +834,6 @@ packages:
       picomatch:
         optional: true
 
-  fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -988,16 +965,6 @@ packages:
   picomatch@4.0.3:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
-
-  playwright-core@1.58.2:
-    resolution: {integrity: sha512-yZkEtftgwS8CsfYo7nm0KE8jsvm6i/PTgVtB8DL726wNf6H2IMsDuxCpJj59KDaxCtSnrWan2AeDqM7JBaultg==}
-    engines: {node: '>=18'}
-    hasBin: true
-
-  playwright@1.58.2:
-    resolution: {integrity: sha512-vA30H8Nvkq/cPBnNw4Q8TWz1EJyqgpuinBcHET0YVJVFldr8JDNiU9LaWAE1KqSkRYazuaBhTpB5ZzShOezQ6A==}
-    engines: {node: '>=18'}
-    hasBin: true
 
   postcss@8.4.31:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
@@ -1702,9 +1669,6 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.3
 
-  fsevents@2.3.2:
-    optional: true
-
   fsevents@2.3.3:
     optional: true
 
@@ -1804,14 +1768,6 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@4.0.3: {}
-
-  playwright-core@1.58.2: {}
-
-  playwright@1.58.2:
-    dependencies:
-      playwright-core: 1.58.2
-    optionalDependencies:
-      fsevents: 2.3.2
 
   postcss@8.4.31:
     dependencies:

@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: repoRoot,
   transpilePackages: [
+    "@agent-picker/design-lab",
     "@agent-picker/picker",
-    "@agent-picker/workspace",
     "@agent-picker/next",
   ],
 };

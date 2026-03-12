@@ -88,8 +88,6 @@ export default function AgentPickerBoard({
   const syncTone =
     syncState === "conflict"
       ? "border-[#ead6d2] bg-[#fff6f3] text-[#8b4e45]"
-      : syncState === "snapshot"
-        ? "border-[#d7e6de] bg-[#f3f8f5] text-[#476f60]"
       : syncState === "offline"
         ? "border-[#e6ddd0] bg-[#fbf7ef] text-[#8a6c33]"
         : "border-[#e5e5e5] bg-white text-[#5e5e5e]";
@@ -424,11 +422,11 @@ export default function AgentPickerBoard({
                   <div className="absolute inset-0 grid place-items-center">
                     <div className="rounded-[1.6rem] border border-dashed border-[#d9d9d9] bg-white/70 px-8 py-6 text-center shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
                       <p className="text-lg font-medium text-[#171717]">
-                        {readOnly ? "No published scene yet" : "Drag components into the canvas"}
+                        {readOnly ? "Local daemon required" : "Drag components into the canvas"}
                       </p>
                       <p className="mt-2 text-sm text-[#8b8b8b]">
                         {readOnly
-                          ? "Run the local daemon to edit, or publish a scene snapshot for this page."
+                          ? "Run the local daemon to load and edit this design lab."
                           : "Move them around freely and compare directions."}
                       </p>
                     </div>

@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 
 export type AgentPickerSourceKind = "project" | "draft" | "page-import";
 export type AgentPickerViewport = "desktop" | "mobile" | "original";
-export type AgentPickerSyncState = "connecting" | "connected" | "saving" | "offline" | "conflict" | "snapshot";
+export type AgentPickerSyncState = "connecting" | "connected" | "saving" | "offline" | "conflict";
 export type AgentPickerRenderKind = "component" | "asset";
 
 export interface AgentPickerViewportConfig {

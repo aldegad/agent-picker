@@ -4,7 +4,6 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } f
 import {
   addSceneNode,
   createSceneEventSource,
-  fetchAvailableScene,
   fetchScene,
   parseSceneEvent,
   removeSceneNode,
@@ -40,7 +39,6 @@ export function useAgentPickerWorkspace({ items, itemsById }: UseAgentPickerWork
   const [query, setQuery] = useState("");
   const [zoom, setZoom] = useState(1);
   const [toolbarSafeTop, setToolbarSafeTop] = useState(DEFAULT_TOOLBAR_SAFE_TOP);
-  const [interactionMode, setInteractionMode] = useState<"edit" | "view">("edit");
   const [selectedStudyId, setSelectedStudyId] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [isSceneReady, setIsSceneReady] = useState(false);
@@ -79,11 +77,10 @@ export function useAgentPickerWorkspace({ items, itemsById }: UseAgentPickerWork
   );
 
   const applyLoadedScene = useCallback(
-    ({ scene, source }: Awaited<ReturnType<typeof fetchAvailableScene>>) => {
+    (scene: AgentPickerScene) => {
       applyResolvedScene(resolveSceneStudies(scene, itemsById, toolbarSafeTop, zoom));
       localDirtyRef.current = false;
-      setInteractionMode(source === "daemon" ? "edit" : "view");
-      setSyncState(source === "daemon" ? "connected" : "snapshot");
+      setSyncState("connected");
     },
     [applyResolvedScene, itemsById, toolbarSafeTop, zoom],
   );
@@ -91,8 +88,8 @@ export function useAgentPickerWorkspace({ items, itemsById }: UseAgentPickerWork
   const reloadScene = useCallback(async () => {
     try {
       setSyncState("connecting");
-      const result = await fetchAvailableScene();
-      applyLoadedScene(result);
+      const scene = await fetchScene();
+      applyLoadedScene(scene);
       setIsSceneReady(true);
     } catch {
       setSyncState("offline");
@@ -106,10 +103,10 @@ export function useAgentPickerWorkspace({ items, itemsById }: UseAgentPickerWork
     const loadInitialScene = async () => {
       try {
         setSyncState("connecting");
-        const result = await fetchAvailableScene();
+        const scene = await fetchScene();
         if (!active) return;
 
-        applyLoadedScene(result);
+        applyLoadedScene(scene);
       } catch {
         if (!active) return;
         setSyncState("offline");
@@ -128,7 +125,7 @@ export function useAgentPickerWorkspace({ items, itemsById }: UseAgentPickerWork
   }, [applyLoadedScene]);
 
   useEffect(() => {
-    if (!isSceneReady || interactionMode !== "edit") return;
+    if (!isSceneReady) return;
     if (typeof window === "undefined" || typeof window.EventSource === "undefined") return;
 
     const eventSource = createSceneEventSource();
@@ -186,7 +183,7 @@ export function useAgentPickerWorkspace({ items, itemsById }: UseAgentPickerWork
       eventSource.removeEventListener("scene", handleSceneEvent as EventListener);
       eventSource.close();
     };
-  }, [applyResolvedScene, interactionMode, isSceneReady, itemsById, toolbarSafeTop, zoom]);
+  }, [applyResolvedScene, isSceneReady, itemsById, toolbarSafeTop, zoom]);
 
   useEffect(() => {
     if (copyState !== "copied") return;
@@ -217,7 +214,7 @@ export function useAgentPickerWorkspace({ items, itemsById }: UseAgentPickerWork
   }, [deferredQuery, items]);
 
   const visibleStudies = useMemo(() => sortStudies(studies).filter((study) => !study.hidden), [studies]);
-  const isReadOnly = interactionMode === "view";
+  const isReadOnly = syncState === "offline";
 
   const queueSceneMutation = useCallback(
     (run: () => Promise<AgentPickerScene>) => {

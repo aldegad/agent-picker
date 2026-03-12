@@ -10,11 +10,11 @@ Safer options:
 - keep a dedicated second clone for the public repo
 - export only the Agent Picker subtree when syncing from a host repo
 
-## If You Sync From A Host Repo
+## If You Mirror From Another Repo
 
-Only export the Agent Picker subtree, never the host repository `main` branch.
+Only export the Agent Picker subtree, never the other repository's full `main` branch.
 
-Example from a host repository:
+Example from another repository:
 
 ```bash
 git subtree split --prefix <path-to-agent-picker-in-your-host-repo> -b aldegad/agent-picker-export
@@ -35,8 +35,7 @@ git log --oneline --decorate -n 5
 - run `pnpm run lint`
 - run `pnpm run test`
 - run `pnpm run build`
-- run `pnpm run qa:agent-picker` if UI behavior changed
-- review `example/next-host/.agent-picker/scene.json` and generated files
+- review the example design-lab items and local `.agent-picker/scene.json` if board behavior changed
 - confirm `.github/workflows/secret-scan.yml` is still present
 
 ## Example Host Boundaries

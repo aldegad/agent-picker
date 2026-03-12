@@ -3,7 +3,7 @@
 ## Working Context
 
 - In the standalone Agent Picker repository, root scripts target `example/next-host`.
-- In a product repo that vendors Agent Picker under `vendor/agent-picker`, prefer the host project's root scripts when they are available.
+- In an installed host project, prefer host root scripts that wrap `agent-pickerd`.
 - Treat `.agent-picker/dev-selection.json` and `.agent-picker/agent-notes/*.json` as shared coordination state, not private scratch space.
 
 ## Agent Picker First
@@ -12,7 +12,7 @@
 - If the user says `이거 봐줘` or `방금 선택한 거 봐줘`, interpret that as "read the latest Agent Picker selection first."
 - If the user says `see pick1`, `check pick 1`, `look at selection 2`, or similar English shorthand, read the latest selection first and map the number to the `elements` array using 1-based indexing.
 - Primary command in the standalone repo: `pnpm run agent-pickerd:get-selection`
-- Primary command in an installed host: `pnpm run agent-pickerd:get-selection` from the host root
+- Primary command in an installed host: the host root `agent-pickerd:get-selection` script
 
 ## Agent Notes
 
@@ -29,6 +29,6 @@
 
 ## Repo Discipline
 
-- Keep shared engine code inside `scripts/`, `tools/`, and `web/` reusable across hosts.
+- Keep shared engine code inside `packages/`, `tools/agent-pickerd/`, `scripts/`, and `web/`.
 - Keep example-only behavior inside `example/next-host/`.
 - Do not hardcode product-specific names, storage keys, or routes into the shared engine without documenting them.

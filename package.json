@@ -11,26 +11,20 @@
   "scripts": {
     "postinstall": "node ./scripts/link-example-runtime.mjs",
     "setup:example": "node ./scripts/link-example-runtime.mjs",
-    "agent-picker:prepare": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host agent-picker:prepare",
-    "agent-picker:web:dev": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host dev",
-    "agent-picker:web:build": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host build",
     "dev": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host dev",
     "build": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host build",
     "lint": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host lint",
     "typecheck": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host typecheck",
     "test": "vitest run --passWithNoTests",
-    "qa:agent-picker": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host qa:agent-picker",
     "agent-pickerd:serve": "node ./packages/server/src/cli.mjs serve --root ./example/next-host",
     "agent-pickerd:get-scene": "node ./packages/server/src/cli.mjs get-scene --root ./example/next-host",
     "agent-pickerd:get-selection": "node ./packages/server/src/cli.mjs get-selection --root ./example/next-host",
     "agent-pickerd:get-agent-note": "node ./packages/server/src/cli.mjs get-agent-note --root ./example/next-host",
     "agent-pickerd:set-agent-note": "node ./packages/server/src/cli.mjs set-agent-note --root ./example/next-host",
-    "agent-pickerd:clear-agent-note": "node ./packages/server/src/cli.mjs clear-agent-note --root ./example/next-host",
-    "init": "node ./tools/init/main.mjs"
+    "agent-pickerd:clear-agent-note": "node ./packages/server/src/cli.mjs clear-agent-note --root ./example/next-host"
   },
   "devDependencies": {
     "@types/node": "25.3.5",
-    "playwright": "^1.58.2",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
   }

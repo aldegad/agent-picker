@@ -10,18 +10,18 @@ import {
 } from "./registry";
 import type { AgentPickerComponentItem } from "./types";
 
-interface AgentPickerWorkspaceProviderProps {
+interface AgentPickerDesignLabProviderProps {
   children: React.ReactNode;
   items: AgentPickerComponentItem[];
   itemsById?: Map<string, AgentPickerComponentItem>;
 }
 
-interface AgentPickerWorkspaceProps {
+interface AgentPickerDesignLabProps {
   items?: AgentPickerComponentItem[];
   itemsById?: Map<string, AgentPickerComponentItem>;
 }
 
-interface AgentPickerProjectProviderProps {
+interface AgentPickerDesignLabProjectProviderProps {
   children: React.ReactNode;
   draftItems?: AgentPickerComponentItem[];
   projectItems?: AgentPickerComponentItem[];
@@ -47,16 +47,16 @@ function useResolvedRegistry(
     }
 
     throw new Error(
-      "AgentPickerWorkspace needs either AgentPickerWorkspaceProvider or explicit items.",
+      "AgentPickerDesignLab needs either AgentPickerDesignLabProvider or explicit items.",
     );
   }, [context, items, itemsById]);
 }
 
-export function AgentPickerWorkspaceProvider({
+export function AgentPickerDesignLabProvider({
   children,
   items,
   itemsById,
-}: AgentPickerWorkspaceProviderProps) {
+}: AgentPickerDesignLabProviderProps) {
   const value = useMemo(
     () => (itemsById ? { items, itemsById } : createAgentPickerRegistry(items)),
     [items, itemsById],
@@ -69,13 +69,13 @@ export function AgentPickerWorkspaceProvider({
   );
 }
 
-export function AgentPickerProjectProvider({
+export function AgentPickerDesignLabProjectProvider({
   children,
   draftItems = [],
   projectItems = [],
   pageImportItems = [],
   showDevtoolsInDevelopment = false,
-}: AgentPickerProjectProviderProps) {
+}: AgentPickerDesignLabProjectProviderProps) {
   const items = useMemo(
     () => mergeAgentPickerItems(draftItems, projectItems, pageImportItems),
     [draftItems, pageImportItems, projectItems],
@@ -83,9 +83,9 @@ export function AgentPickerProjectProvider({
 
   return (
     <AgentPickerProvider showDevtoolsInDevelopment={showDevtoolsInDevelopment}>
-      <AgentPickerWorkspaceProvider items={items}>
+      <AgentPickerDesignLabProvider items={items}>
         {children}
-      </AgentPickerWorkspaceProvider>
+      </AgentPickerDesignLabProvider>
     </AgentPickerProvider>
   );
 }
@@ -94,17 +94,17 @@ export function useAgentPickerRegistry() {
   const context = useContext(AgentPickerRegistryContext);
   if (!context) {
     throw new Error(
-      "useAgentPickerRegistry must be used inside AgentPickerWorkspaceProvider.",
+      "useAgentPickerRegistry must be used inside AgentPickerDesignLabProvider.",
     );
   }
 
   return context;
 }
 
-export function AgentPickerWorkspace({
+export function AgentPickerDesignLab({
   items,
   itemsById,
-}: AgentPickerWorkspaceProps) {
+}: AgentPickerDesignLabProps) {
   const registry = useResolvedRegistry(items, itemsById);
 
   return (

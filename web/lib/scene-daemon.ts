@@ -1,9 +1,7 @@
 import type { AgentPickerScene, AgentPickerStudy, AgentPickerSyncState, AgentPickerViewport } from "./types";
 
 const DEFAULT_DAEMON_URL = "http://127.0.0.1:4312";
-const DEFAULT_SCENE_SNAPSHOT_URL = "/agent-picker/scene.json";
 type RawViewport = AgentPickerViewport | "mark";
-export type AgentPickerSceneSource = "daemon" | "snapshot";
 
 export interface AgentPickerSceneEvent {
   type: "scene.updated";
@@ -65,11 +63,6 @@ export function getAgentPickerDaemonUrl() {
 
 export function getAgentPickerEventsUrl() {
   return `${getAgentPickerDaemonUrl()}/events`;
-}
-
-export function getAgentPickerSnapshotUrl() {
-  const raw = process.env.NEXT_PUBLIC_AGENT_PICKER_SNAPSHOT_URL ?? DEFAULT_SCENE_SNAPSHOT_URL;
-  return raw;
 }
 
 export function normalizeScene(scene: unknown): AgentPickerScene {
@@ -134,34 +127,6 @@ export async function fetchScene(signal?: AbortSignal) {
     method: "GET",
     signal,
   });
-}
-
-export async function fetchSnapshotScene(signal?: AbortSignal) {
-  return requestScene(getAgentPickerSnapshotUrl(), {
-    method: "GET",
-    signal,
-  });
-}
-
-export async function fetchAvailableScene(signal?: AbortSignal): Promise<{
-  scene: AgentPickerScene;
-  source: AgentPickerSceneSource;
-}> {
-  try {
-    return {
-      scene: await fetchScene(signal),
-      source: "daemon",
-    };
-  } catch (daemonError) {
-    try {
-      return {
-        scene: await fetchSnapshotScene(signal),
-        source: "snapshot",
-      };
-    } catch {
-      throw daemonError;
-    }
-  }
 }
 
 export async function updateSceneMeta(
@@ -239,8 +204,6 @@ export function getSyncStateLabel(state: AgentPickerSyncState) {
       return "Connecting";
     case "saving":
       return "Saving";
-    case "snapshot":
-      return "View Only";
     case "offline":
       return "Daemon Offline";
     case "conflict":
