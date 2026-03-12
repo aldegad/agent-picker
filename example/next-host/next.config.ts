@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
   transpilePackages: [
     "@agent-picker/design-lab",
     "@agent-picker/picker",
-    "@agent-picker/next",
   ],
 };
 

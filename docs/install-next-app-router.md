@@ -7,7 +7,7 @@ Agent Picker's current integration model is package-first. There is no installer
 Use the package manager you prefer. For a published release, the npm form looks like this:
 
 ```bash
-npm install @agent-picker/picker @agent-picker/design-lab @agent-picker/next @agent-picker/server
+npm install @agent-picker/picker @agent-picker/design-lab @agent-picker/server
 ```
 
 If you are testing from a local clone before publication, workspace-link or file-link the same packages instead.
@@ -23,7 +23,6 @@ const nextConfig: NextConfig = {
   transpilePackages: [
     "@agent-picker/picker",
     "@agent-picker/design-lab",
-    "@agent-picker/next",
   ],
 };
 
@@ -101,14 +100,6 @@ export default function DesignLabPage() {
 ```
 
 Keep the items inline if the route is small, or move them into a nearby `design-lab-items.tsx` file.
-
-## Selection Route
-
-Create `app/api/devtools/selection/route.ts` or `src/app/api/devtools/selection/route.ts`:
-
-```ts
-export { dynamic, GET, POST } from "@agent-picker/next";
-```
 
 ## Daemon and Dev Server
 

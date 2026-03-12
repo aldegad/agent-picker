@@ -6,7 +6,6 @@ Agent Picker is a package-first UI selection bridge for coding agents. Mount the
 
 - `@agent-picker/picker`: app-shell provider and devtools overlay
 - `@agent-picker/design-lab`: design-lab board UI and item types
-- `@agent-picker/next`: Next.js route exports for selection capture
 - `@agent-picker/server`: `agent-pickerd` CLI and daemon entrypoint
 
 ## Develop This Repo
@@ -42,7 +41,6 @@ Detailed integration notes: [docs/install-next-app-router.md](./docs/install-nex
 
 - `packages/picker/`: picker core provider and devtools overlay
 - `packages/design-lab/`: design-lab board UI and registry helpers
-- `packages/next/`: Next.js selection route exports
 - `packages/server/`: `agent-pickerd` package entrypoints
 - `web/`: shared UI primitives, scene hooks, and devtools internals
 - `tools/agent-pickerd/`: local state daemon implementation

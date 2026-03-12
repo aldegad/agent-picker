@@ -23,9 +23,6 @@ importers:
       '@agent-picker/design-lab':
         specifier: workspace:*
         version: link:../../packages/design-lab
-      '@agent-picker/next':
-        specifier: workspace:*
-        version: link:../../packages/next
       '@agent-picker/picker':
         specifier: workspace:*
         version: link:../../packages/picker
@@ -84,18 +81,6 @@ importers:
       '@agent-picker/picker':
         specifier: workspace:*
         version: link:../picker
-      react:
-        specifier: ^19.0.0
-        version: 19.2.4
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.4(react@19.2.4)
-
-  packages/next:
-    dependencies:
-      next:
-        specifier: ^16.0.0
-        version: 16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: ^19.0.0
         version: 19.2.4
