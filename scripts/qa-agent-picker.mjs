@@ -3,10 +3,7 @@ import { chromium } from "playwright";
 
 const appRoot = process.cwd();
 const artifactsDir = path.resolve(appRoot, ".artifacts", "agent-picker");
-const targetUrl =
-  process.env.AGENT_PICKER_QA_URL ??
-  process.env.DESIGN_LAB_QA_URL ??
-  "http://127.0.0.1:3000/playground";
+const targetUrl = process.env.AGENT_PICKER_QA_URL ?? "http://127.0.0.1:3000/playground";
 
 const scenarios = [
   {

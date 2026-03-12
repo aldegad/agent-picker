@@ -54,10 +54,7 @@ const pageImportsWatcher = watch(pageImportsConfigPath, () => {
   scheduleDraftRefresh("page import config update");
 });
 
-const hostDevScript =
-  process.env.AGENT_PICKER_HOST_DEV_SCRIPT ??
-  process.env.DESIGN_LAB_HOST_DEV_SCRIPT ??
-  "agent-picker:host-dev";
+const hostDevScript = process.env.AGENT_PICKER_HOST_DEV_SCRIPT ?? "agent-picker:host-dev";
 const child = spawnPackageScript(hostDevScript, { cwd: appRoot });
 
 if (!child) {

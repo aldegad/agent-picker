@@ -3,7 +3,6 @@ import { dirname, resolve } from "node:path";
 
 function resolveStateDir(root) {
   const primaryPath = resolve(root, ".agent-picker");
-  const legacyPath = resolve(root, ".design-lab");
 
   if (
     existsSync(primaryPath) ||
@@ -11,14 +10,6 @@ function resolveStateDir(root) {
     existsSync(resolve(primaryPath, "dev-selections.json"))
   ) {
     return primaryPath;
-  }
-
-  if (
-    existsSync(legacyPath) ||
-    existsSync(resolve(legacyPath, "dev-selection.json")) ||
-    existsSync(resolve(legacyPath, "dev-selections.json"))
-  ) {
-    return legacyPath;
   }
 
   return primaryPath;

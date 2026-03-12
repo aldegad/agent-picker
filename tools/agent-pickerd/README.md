@@ -27,7 +27,7 @@ node apps/web/src/vendor/agent-picker/tools/agent-pickerd/main.mjs serve --root 
 ```
 
 기본 주소는 `http://127.0.0.1:4312`입니다.
-상태 파일은 `.agent-picker/`에 저장되며, 기존 `.design-lab/` 상태가 있으면 마이그레이션 편의를 위해 자동 fallback 합니다.
+상태 파일은 `.agent-picker/`에 저장됩니다.
 
 ## HTTP API
 

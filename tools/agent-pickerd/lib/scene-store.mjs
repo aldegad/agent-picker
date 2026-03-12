@@ -4,14 +4,9 @@ import { createEmptyScene, currentTimestamp, ensureSceneShape } from "./scene-sc
 
 function resolveStateDir(root) {
   const primaryPath = resolve(root, ".agent-picker");
-  const legacyPath = resolve(root, ".design-lab");
 
   if (existsSync(primaryPath) || existsSync(resolve(primaryPath, "scene.json"))) {
     return primaryPath;
-  }
-
-  if (existsSync(legacyPath) || existsSync(resolve(legacyPath, "scene.json"))) {
-    return legacyPath;
   }
 
   return primaryPath;

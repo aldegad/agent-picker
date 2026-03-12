@@ -59,10 +59,7 @@ function normalizeNode(rawNode: unknown): AgentPickerStudy | null {
 }
 
 export function getAgentPickerDaemonUrl() {
-  const raw =
-    process.env.NEXT_PUBLIC_AGENT_PICKER_DAEMON_URL ??
-    process.env.NEXT_PUBLIC_DESIGN_LAB_DAEMON_URL ??
-    DEFAULT_DAEMON_URL;
+  const raw = process.env.NEXT_PUBLIC_AGENT_PICKER_DAEMON_URL ?? DEFAULT_DAEMON_URL;
   return raw.replace(/\/$/, "");
 }
 
@@ -71,10 +68,7 @@ export function getAgentPickerEventsUrl() {
 }
 
 export function getAgentPickerSnapshotUrl() {
-  const raw =
-    process.env.NEXT_PUBLIC_AGENT_PICKER_SNAPSHOT_URL ??
-    process.env.NEXT_PUBLIC_DESIGN_LAB_SNAPSHOT_URL ??
-    DEFAULT_SCENE_SNAPSHOT_URL;
+  const raw = process.env.NEXT_PUBLIC_AGENT_PICKER_SNAPSHOT_URL ?? DEFAULT_SCENE_SNAPSHOT_URL;
   return raw;
 }
 

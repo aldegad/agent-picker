@@ -5,14 +5,9 @@ const VALID_STATUSES = new Set(["acknowledged", "in_progress", "fixed", "needs_r
 
 function resolveStateDir(root) {
   const primaryPath = resolve(root, ".agent-picker");
-  const legacyPath = resolve(root, ".design-lab");
 
   if (existsSync(primaryPath) || existsSync(resolve(primaryPath, "agent-notes"))) {
     return primaryPath;
-  }
-
-  if (existsSync(legacyPath) || existsSync(resolve(legacyPath, "agent-notes"))) {
-    return legacyPath;
   }
 
   return primaryPath;
