@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-
-import AgentPickerApp from "@/components/agent-picker/AgentPickerApp";
+import { AgentPickerWorkspace } from "@agent-picker/react";
 
 export const metadata: Metadata = {
   title: "Agent Picker Playground",
@@ -8,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function PlaygroundPage() {
-  return <AgentPickerApp />;
+  return <AgentPickerWorkspace />;
 }

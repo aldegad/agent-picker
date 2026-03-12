@@ -20,12 +20,12 @@
     "typecheck": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host typecheck",
     "test": "vitest run --passWithNoTests",
     "qa:agent-picker": "node ./scripts/link-example-runtime.mjs && pnpm --dir example/next-host qa:agent-picker",
-    "agent-pickerd:serve": "node ./tools/agent-pickerd/main.mjs serve --root ./example/next-host",
-    "agent-pickerd:get-scene": "node ./tools/agent-pickerd/main.mjs get-scene --root ./example/next-host",
-    "agent-pickerd:get-selection": "node ./tools/agent-pickerd/main.mjs get-selection --root ./example/next-host",
-    "agent-pickerd:get-agent-note": "node ./tools/agent-pickerd/main.mjs get-agent-note --root ./example/next-host",
-    "agent-pickerd:set-agent-note": "node ./tools/agent-pickerd/main.mjs set-agent-note --root ./example/next-host",
-    "agent-pickerd:clear-agent-note": "node ./tools/agent-pickerd/main.mjs clear-agent-note --root ./example/next-host",
+    "agent-pickerd:serve": "node ./packages/server/src/cli.mjs serve --root ./example/next-host",
+    "agent-pickerd:get-scene": "node ./packages/server/src/cli.mjs get-scene --root ./example/next-host",
+    "agent-pickerd:get-selection": "node ./packages/server/src/cli.mjs get-selection --root ./example/next-host",
+    "agent-pickerd:get-agent-note": "node ./packages/server/src/cli.mjs get-agent-note --root ./example/next-host",
+    "agent-pickerd:set-agent-note": "node ./packages/server/src/cli.mjs set-agent-note --root ./example/next-host",
+    "agent-pickerd:clear-agent-note": "node ./packages/server/src/cli.mjs clear-agent-note --root ./example/next-host",
     "init": "node ./tools/init/main.mjs"
   },
   "devDependencies": {

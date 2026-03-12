@@ -1,6 +1,7 @@
 import http from "node:http";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { AgentNoteStore, watchAgentNotes } from "./lib/agent-note-store.mjs";
 import { DevSelectionStore } from "./lib/dev-selection-store.mjs";
 import { encodeAgentNoteEvent, encodeSceneEvent, ensureSceneShape, normalizeViewport } from "./lib/scene-schema.mjs";
@@ -185,7 +186,7 @@ class SceneEventBroker {
   }
 }
 
-function createServer({ host, port, root }) {
+export function createServer({ host, port, root }) {
   const broker = new SceneEventBroker();
   const store = new SceneStore(root, {
     onChange(scene, source) {
@@ -518,7 +519,7 @@ function commandRemoveNode(options) {
   process.stdout.write(`${JSON.stringify(store.removeNode(requireString(options, "id")), null, 2)}\n`);
 }
 
-function main(argv = process.argv.slice(2)) {
+export function main(argv = process.argv.slice(2)) {
   const [command, ...rest] = argv;
 
   if (!command || command === "--help" || command === "-h") {
@@ -565,4 +566,10 @@ function main(argv = process.argv.slice(2)) {
   }
 }
 
-main();
+const isDirectExecution =
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
+
+if (isDirectExecution) {
+  main();
+}

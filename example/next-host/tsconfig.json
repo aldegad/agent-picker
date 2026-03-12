@@ -21,9 +21,6 @@
     "paths": {
       "@/*": [
         "src/*"
-      ],
-      "@agent-picker/*": [
-        "../../*"
       ]
     },
     "plugins": [

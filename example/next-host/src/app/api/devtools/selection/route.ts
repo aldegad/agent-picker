@@ -1,1 +1,1 @@
-export { dynamic, GET, POST } from "@agent-picker/web/server/dev-selection-route";
+export { dynamic, GET, POST } from "@agent-picker/next";

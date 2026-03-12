@@ -2,9 +2,12 @@
 
 Agent Picker is a local visual workspace for reviewing UI drafts, arranging them on a board, capturing DOM selections from a running app, and sharing agent progress through a lightweight daemon.
 
-It is designed for two modes:
-- a standalone public repository with a bundled Next.js example host
-- a vendored `vendor/agent-picker` install inside a real product codebase
+It is organized as a small package workspace:
+- `@agent-picker/react`: provider, workspace UI, registry helpers
+- `@agent-picker/next`: Next.js route exports for selection capture
+- `@agent-picker/server`: `agent-pickerd` CLI and daemon entrypoint
+
+The repository ships with a bundled Next.js example host and can also be vendored into a real product codebase.
 
 ## Quick Start
 
@@ -32,28 +35,65 @@ The example host stores local state in `example/next-host/.agent-picker/`.
 
 ## Install Into an Existing Next.js Host
 
-The recommended install flow is to clone Agent Picker into your host project:
+The preferred integration model is:
+
+- add `AgentPickerProvider` near your app shell
+- render `AgentPickerWorkspace` on your playground route
+- re-export the selection route from `@agent-picker/next`
+- run `agent-pickerd`
+
+The bundled example host uses exactly that shape.
+
+```tsx
+import { AgentPickerProjectProvider } from "@agent-picker/react";
+import { generatedAgentPickerDraftItems } from "@/lib/agent-picker/generated-drafts";
+import { generatedAgentPickerPageImportItems } from "@/lib/agent-picker/generated-page-imports";
+import { projectAgentPickerItems } from "@/lib/agent-picker/project-items";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <AgentPickerProjectProvider
+      draftItems={generatedAgentPickerDraftItems}
+      projectItems={projectAgentPickerItems}
+      pageImportItems={generatedAgentPickerPageImportItems}
+      showDevtoolsInDevelopment
+    >
+      {children}
+    </AgentPickerProjectProvider>
+  );
+}
+```
+
+```tsx
+import { AgentPickerWorkspace } from "@agent-picker/react";
+
+export default function PlaygroundPage() {
+  return <AgentPickerWorkspace />;
+}
+```
+
+```ts
+export { dynamic, GET, POST } from "@agent-picker/next";
+```
+
+If you want to vendor the repo into a host project, clone it into `vendor/agent-picker` and point your host at the package entrypoints there:
 
 ```bash
 git clone https://github.com/aldegad/agent-picker.git vendor/agent-picker
 pnpm install
-node ./vendor/agent-picker/tools/init/main.mjs --root .
-```
-
-After init:
-
-```bash
 pnpm run agent-pickerd:serve
-pnpm run agent-picker:web:dev
 ```
 
-Detailed install notes: [docs/install-next-app-router.md](./docs/install-next-app-router.md)
+Detailed integration notes: [docs/install-next-app-router.md](./docs/install-next-app-router.md)
 
 ## Repo Layout
 
+- `packages/react/`: provider, workspace component, and registry helpers
+- `packages/next/`: Next.js selection route exports
+- `packages/server/`: `agent-pickerd` package entrypoints
 - `web/`: shared Agent Picker UI, scene hooks, and devtools overlay
 - `tools/agent-pickerd/`: local state daemon and CLI
-- `tools/init/`: host installer for supported app types
+- `tools/init/`: legacy vendored installer for supported app types
 - `scripts/`: draft generation, dev orchestration, and QA helpers
 - `example/next-host/`: smoke-test host app for the standalone repository
 
@@ -78,7 +118,7 @@ Agent-specific guidance lives here:
 - `pnpm run lint`: typecheck the example host
 - `pnpm run test`: run daemon unit tests
 - `pnpm run qa:agent-picker`: capture smoke-test screenshots with Playwright
-- `pnpm run init`: run the installer from a host project root
+- `pnpm run init`: run the legacy vendored installer from a host project root
 
 ## Docs
 

@@ -1,36 +1,75 @@
 # Install Into a Next.js App Router Host
 
-Agent Picker currently ships an installer for Next.js App Router hosts that use TypeScript and Tailwind CSS.
+Agent Picker's preferred integration style is now package-oriented:
 
-## Recommended Flow
+- `@agent-picker/react` for the provider and workspace page
+- `@agent-picker/next` for the selection route
+- `@agent-picker/server` for `agent-pickerd`
 
-From your host project root:
+## Minimal Host Shape
 
-```bash
-git clone https://github.com/aldegad/agent-picker.git vendor/agent-picker
-pnpm install
-node ./vendor/agent-picker/tools/init/main.mjs --root .
+Your host needs four things:
+
+1. Project item sources
+2. `AgentPickerProvider` near the app shell
+3. A route that renders `AgentPickerWorkspace`
+4. A dev selection route export
+
+## Item Sources
+
+Keep your project-specific items under `src/lib/agent-picker/project-items.tsx` or the equivalent path under your alias root:
+
+```tsx
+import type { AgentPickerComponentItem } from "@agent-picker/react/types";
+
+export const projectAgentPickerItems: AgentPickerComponentItem[] = [];
 ```
 
-If your host app is not at the project root, point init at it explicitly:
+## Provider
 
-```bash
-node ./vendor/agent-picker/tools/init/main.mjs --root . --host apps/web
+Wrap your app shell with the provider:
+
+```tsx
+"use client";
+
+import { AgentPickerProjectProvider } from "@agent-picker/react";
+import { generatedAgentPickerDraftItems } from "@/lib/agent-picker/generated-drafts";
+import { generatedAgentPickerPageImportItems } from "@/lib/agent-picker/generated-page-imports";
+import { projectAgentPickerItems } from "@/lib/agent-picker/project-items";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <AgentPickerProjectProvider
+      draftItems={generatedAgentPickerDraftItems}
+      projectItems={projectAgentPickerItems}
+      pageImportItems={generatedAgentPickerPageImportItems}
+      showDevtoolsInDevelopment
+    >
+      {children}
+    </AgentPickerProjectProvider>
+  );
+}
 ```
 
-## What Init Adds
+## Playground Route
 
-The installer wires Agent Picker into your host by:
+```tsx
+import { AgentPickerWorkspace } from "@agent-picker/react";
 
-- creating `components/agent-picker/AgentPickerApp.tsx`
-- creating `components/devtools/AgentDomPicker.tsx`
-- creating `app/playground/page.tsx` or `src/app/playground/page.tsx`
-- adding the dev selection API route
-- creating `lib/agent-picker/*` registry files
-- seeding `.agent-picker/scene.json`, `.agent-picker/page-imports.json`, and `.agent-picker/host.json`
-- updating your host and project root scripts
+export default function PlaygroundPage() {
+  return <AgentPickerWorkspace />;
+}
+```
 
-## Daily Commands
+## Selection Route
+
+Create `app/api/devtools/selection/route.ts` or `src/app/api/devtools/selection/route.ts`:
+
+```ts
+export { dynamic, GET, POST } from "@agent-picker/next";
+```
+
+## Daemon
 
 From the host project root:
 
@@ -63,8 +102,11 @@ components/agent-picker/drafts
 
 Agent Picker generates the draft registry and mirrored public assets during `predev` and `prebuild`.
 
+## Legacy Installer
+
+`tools/init/main.mjs` still exists for vendored installs and can bootstrap the older wrapper-based layout. It is now considered a compatibility path rather than the preferred integration model.
+
 ## Notes
 
-- The current installer targets host projects. Do not run it from the standalone Agent Picker repository root.
 - If your team wants a tracked git dependency, a submodule is safer than pushing to a public remote from a private host repo.
 - If you prefer a vendored copy without submodules, clone the repo into `vendor/agent-picker` and update it intentionally.
