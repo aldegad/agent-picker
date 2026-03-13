@@ -1,3 +1,6 @@
+const REFACTOR_PROMPT =
+  "Please refactor this by clearly separating responsibilities, untangling any spaghetti code, and removing dead code and unnecessary fallbacks. If possible, keep each file under 500 lines.";
+
 async function sendBridgeMessage(type) {
   const daemonUrl = await writeDaemonUrl(daemonUrlInput.value);
   return chrome.runtime.sendMessage({
@@ -30,6 +33,7 @@ async function runAction(type, workingMessage, successMessage) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   daemonUrlInput.value = await readDaemonUrl();
+  setRefactorPrompt(REFACTOR_PROMPT);
   setStatus("Idle.", "idle");
 });
 
@@ -58,5 +62,14 @@ inspectElementButton.addEventListener("click", async () => {
 
   if (ok) {
     window.close();
+  }
+});
+
+copyRefactorPromptButton.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(REFACTOR_PROMPT);
+    setStatus("Refactor prompt copied.", "success");
+  } catch (error) {
+    setStatus(error instanceof Error ? error.message : String(error), "error");
   }
 });

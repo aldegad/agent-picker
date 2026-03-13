@@ -159,6 +159,26 @@ body {
   line-height: 1.5;
 }
 
+.prompt-text {
+  width: 100%;
+  min-height: 118px;
+  margin-top: 10px;
+  border: 1px solid rgba(23, 36, 43, 0.12);
+  border-radius: 14px;
+  padding: 12px;
+  resize: vertical;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.prompt-text:focus {
+  outline: 2px solid rgba(37, 198, 156, 0.24);
+  border-color: rgba(37, 198, 156, 0.45);
+}
+
 kbd {
   border: 1px solid rgba(23, 36, 43, 0.14);
   border-radius: 6px;

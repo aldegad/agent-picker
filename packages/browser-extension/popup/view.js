@@ -2,6 +2,8 @@ const daemonUrlInput = document.getElementById("daemon-url");
 const testBridgeButton = document.getElementById("test-bridge");
 const capturePageButton = document.getElementById("capture-page");
 const inspectElementButton = document.getElementById("inspect-element");
+const copyRefactorPromptButton = document.getElementById("copy-refactor-prompt");
+const refactorPromptElement = document.getElementById("refactor-prompt");
 const statusElement = document.getElementById("status");
 const lastSavedElement = document.getElementById("last-saved");
 
@@ -18,6 +20,10 @@ function setStatus(message, tone = "idle") {
 
 function setLastSaved(message = "") {
   lastSavedElement.textContent = message;
+}
+
+function setRefactorPrompt(message) {
+  refactorPromptElement.value = message;
 }
 
 function updateSavedSelectionLabel(result) {
