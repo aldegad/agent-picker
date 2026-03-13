@@ -1,6 +1,9 @@
 # Install Into a Next.js App Router Host
 
 Agent Picker's current integration model is repo-first. Vendor the repository into your host app, then point a few aliases at the vendored source.
+It is not currently published as installable npm packages.
+Use Node.js 20 or newer for the vendored CLI and local development workflow.
+The example in this repository is currently wired and tested through Next.js webpack mode, so the alias examples below assume the same setup.
 
 ## Put Agent Picker In Your Repo
 
@@ -45,10 +48,12 @@ Next.js should also resolve those aliases at bundler time:
 import path from "node:path";
 import type { NextConfig } from "next";
 
-const agentPickerRoot = path.resolve(process.cwd(), "./vendor/agent-picker");
+const hostRoot = process.cwd();
+const agentPickerRoot = path.resolve(hostRoot, "./vendor/agent-picker");
+const workspaceRoot = path.resolve(hostRoot, "../..");
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: path.resolve(agentPickerRoot, "..", "..", ".."),
+  outputFileTracingRoot: workspaceRoot,
   webpack(config) {
     config.resolve.alias = {
       ...(config.resolve.alias ?? {}),
@@ -72,6 +77,19 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+```
+
+Set `outputFileTracingRoot` to a common ancestor that contains both the host app and the vendored Agent Picker source. For a host app in `apps/web` with Agent Picker in `apps/web/vendor/agent-picker`, that is usually the monorepo root (`../..` from the host app). If your host lives elsewhere, adjust that path accordingly.
+
+If you use the webpack alias block above, mirror the example host's Next scripts so the same bundler path is active in development and build:
+
+```json
+{
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack"
+  }
+}
 ```
 
 If the host uses Tailwind CSS v4, point the scanner at the vendored source too:
@@ -115,6 +133,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 }
 ```
+
+The provider talks directly to `agent-pickerd`, so you do not need to add a separate Next route just to save selections.
 
 ## Design-Lab Route
 
@@ -161,6 +181,8 @@ From the host project root, run the daemon and your usual dev server:
 npm run agent-pickerd:serve
 npm run dev
 ```
+
+If the daemon is running somewhere other than `http://127.0.0.1:4312`, expose that URL to the browser with `NEXT_PUBLIC_AGENT_PICKER_DAEMON_URL`.
 
 Useful shared-agent commands:
 
