@@ -1,18 +1,63 @@
 const REFACTOR_PROMPT =
   "Please refactor this by clearly separating responsibilities, untangling any spaghetti code, and removing dead code and unnecessary fallbacks. If possible, keep each file under 500 lines.";
 
-async function sendBridgeMessage(type) {
-  const daemonUrl = await writeDaemonUrl(daemonUrlInput.value);
+async function sendBridgeMessage(type, daemonUrl = daemonUrlInput.value) {
+  const savedDaemonUrl = await writeDaemonUrl(daemonUrl);
   return chrome.runtime.sendMessage({
     type,
-    daemonUrl,
+    daemonUrl: savedDaemonUrl,
     ...(await readActiveTab()),
   });
 }
 
+async function refreshConnectionState(showFailure = false) {
+  const daemonUrl = await writeDaemonUrl(daemonUrlInput.value);
+  setConnectionState({
+    state: "checking",
+    label: "Checking bridge...",
+    url: daemonUrl,
+    showForm: false,
+  });
+
+  try {
+    const result = await sendBridgeMessage("agent-picker:test-daemon", daemonUrl);
+    if (!result?.ok) {
+      throw new Error(result?.error || "The bridge did not return a result.");
+    }
+
+    setConnectionState({
+      state: "connected",
+      label: "Connected",
+      url: daemonUrl,
+      showForm: false,
+    });
+
+    if (showFailure) {
+      setFeedback("Bridge connected.", "success");
+    }
+
+    return true;
+  } catch (error) {
+    setConnectionState({
+      state: "disconnected",
+      label: "Bridge offline",
+      url: daemonUrl,
+      showForm: true,
+    });
+
+    if (showFailure) {
+      setFeedback(error instanceof Error ? error.message : String(error), "error");
+    } else {
+      setFeedback("", "idle");
+    }
+
+    return false;
+  }
+}
+
 async function runAction(type, workingMessage, successMessage) {
   setBusyState(true);
-  setStatus(workingMessage, "working");
+  setFeedback(workingMessage, "working");
 
   try {
     const result = await sendBridgeMessage(type);
@@ -20,11 +65,11 @@ async function runAction(type, workingMessage, successMessage) {
       throw new Error(result?.error || "The bridge did not return a result.");
     }
 
-    setStatus(result.message || successMessage, "success");
+    setFeedback(result.message || successMessage, "success");
     updateSavedSelectionLabel(result);
     return true;
   } catch (error) {
-    setStatus(error instanceof Error ? error.message : String(error), "error");
+    setFeedback(error instanceof Error ? error.message : String(error), "error");
     return false;
   } finally {
     setBusyState(false);
@@ -34,22 +79,24 @@ async function runAction(type, workingMessage, successMessage) {
 document.addEventListener("DOMContentLoaded", async () => {
   daemonUrlInput.value = await readDaemonUrl();
   setRefactorPrompt(REFACTOR_PROMPT);
-  setStatus("Idle.", "idle");
+  setLastSaved("");
+  setFeedback("", "idle");
+  setBusyState(true);
+  await refreshConnectionState(false);
+  setBusyState(false);
 });
 
-testBridgeButton.addEventListener("click", async () => {
-  await runAction(
-    "agent-picker:test-daemon",
-    "Checking the local bridge...",
-    "Bridge reachable.",
-  );
+connectDaemonButton.addEventListener("click", async () => {
+  setBusyState(true);
+  await refreshConnectionState(true);
+  setBusyState(false);
 });
 
 capturePageButton.addEventListener("click", async () => {
   await runAction(
     "agent-picker:capture-page",
     "Capturing the current page...",
-    "Current page saved to the daemon.",
+    "Current page saved to the bridge.",
   );
 });
 
@@ -68,8 +115,8 @@ inspectElementButton.addEventListener("click", async () => {
 copyRefactorPromptButton.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(REFACTOR_PROMPT);
-    setStatus("Refactor prompt copied.", "success");
+    setFeedback("Refactor prompt copied.", "success");
   } catch (error) {
-    setStatus(error instanceof Error ? error.message : String(error), "error");
+    setFeedback(error instanceof Error ? error.message : String(error), "error");
   }
 });

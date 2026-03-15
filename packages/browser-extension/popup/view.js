@@ -1,21 +1,37 @@
 const daemonUrlInput = document.getElementById("daemon-url");
-const testBridgeButton = document.getElementById("test-bridge");
+const connectDaemonButton = document.getElementById("connect-daemon");
 const capturePageButton = document.getElementById("capture-page");
 const inspectElementButton = document.getElementById("inspect-element");
 const copyRefactorPromptButton = document.getElementById("copy-refactor-prompt");
 const refactorPromptElement = document.getElementById("refactor-prompt");
-const statusElement = document.getElementById("status");
+const connectionFormElement = document.getElementById("connection-form");
+const connectionDotElement = document.getElementById("connection-dot");
+const connectionLabelElement = document.getElementById("connection-label");
+const connectionUrlElement = document.getElementById("connection-url");
+const feedbackElement = document.getElementById("feedback");
 const lastSavedElement = document.getElementById("last-saved");
+let isBusy = false;
+let isConnected = false;
 
-function setBusyState(isBusy) {
-  for (const button of [testBridgeButton, capturePageButton, inspectElementButton]) {
-    button.disabled = isBusy;
-  }
+function syncButtonState() {
+  connectDaemonButton.disabled = isBusy;
+  capturePageButton.disabled = isBusy || !isConnected;
+  inspectElementButton.disabled = isBusy || !isConnected;
 }
 
-function setStatus(message, tone = "idle") {
-  statusElement.textContent = message;
-  statusElement.className = `status status-${tone}`;
+function setBusyState(busyState) {
+  isBusy = busyState;
+  syncButtonState();
+}
+
+function setActionAvailability(connectedState) {
+  isConnected = connectedState;
+  syncButtonState();
+}
+
+function setFeedback(message = "", tone = "idle") {
+  feedbackElement.textContent = message;
+  feedbackElement.className = `feedback feedback-${tone}`;
 }
 
 function setLastSaved(message = "") {
@@ -24,6 +40,14 @@ function setLastSaved(message = "") {
 
 function setRefactorPrompt(message) {
   refactorPromptElement.value = message;
+}
+
+function setConnectionState({ state, label, url, showForm }) {
+  connectionDotElement.className = `status-dot status-dot-${state}`;
+  connectionLabelElement.textContent = label;
+  connectionUrlElement.textContent = url;
+  connectionFormElement.classList.toggle("is-hidden", !showForm);
+  setActionAvailability(state === "connected");
 }
 
 function updateSavedSelectionLabel(result) {
